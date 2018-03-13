@@ -1,0 +1,29 @@
+{#
+/**
+ * @file
+ * Theme override to present an 'rrule' #type form element.
+ *
+ * Available variables
+ * - element: A list of properties for the rrule form element.
+
+ * @ingroup themeable
+ */
+#}
+<div{{ attributes.addClass('form-rrule') }}>
+  <label>{{ element['#title'] }}</label>
+  {{ element.repeat }}
+  <div class="container-inline">
+    {{ element.freq }}
+    {{ element.interval }}
+    <span class="frequency-name"></span>
+  </div>
+  {{ element.byday }}
+  {{ element.bymonth }}
+  {{ element.byhour }}
+  {{ element.byminute }}
+  {{ element.bysecond }}
+  {{ element.end }}
+  {{ element.exdate }}
+  {{ element.summary }}
+  {{ element.rrule }}
+</div>

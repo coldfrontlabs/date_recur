@@ -1,0 +1,24 @@
+{#
+/**
+ * @file
+ * Theme wrapper to present the RRule end 'radios' #type form element.
+ *
+ * Available variables
+ * - element: A list of properties for the radios element.
+ *
+ * @see template_preprocess_radios()
+ *
+ * @ingroup themeable
+ */
+#}
+<div{{ attributes }}>
+    {{ element.0 }}
+    <div class="container-inline">
+        {{ element.1 }}
+        {{ element.count }}
+    </div>
+    <div class="container-inline">
+        {{ element.2 }}
+        {{ element.until }}
+    </div>
+</div>

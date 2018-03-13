@@ -6,19 +6,13 @@ rrule:
     url: https://raw.githubusercontent.com/jkbrzt/rrule/master/LICENCE
     gpl-compatible: true
   js:
+    lib/moment.js/moment.min.js: {}
     lib/rrule.js/rrule.js: {}
     lib/rrule.js/nlp.js: {}
-
-rrule_widget:
-  js:
-    assets/date_recur_rrule.widget.js: {}
     assets/date_recur_rrule.js: {}
   css:
-    base:
-      assets/date_recur_rrule.css: {}
+      base:
+        assets/date_recur_rrule.css: {}
   dependencies:
-    - date_recur/rrule
     - core/underscore
-    - core/modernizr
-    - core/jquery.ui.datepicker
-    - core/jquery.ui.widget
+    - core/drupalSettings

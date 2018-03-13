@@ -76,6 +76,7 @@ class DateRecurDefaultWidget extends DateRangeDefaultWidget {
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
 
+    unset($element['#title'], $element['#title_display']);
     $element['#element_validate'][] = [$this, 'validateRrule'];
 
     $element['end_value']['#required'] = FALSE;
@@ -84,7 +85,6 @@ class DateRecurDefaultWidget extends DateRangeDefaultWidget {
       '#type' => 'textarea',
       '#default_value' => isset($items[$delta]->rrule) ? $items[$delta]->rrule : NULL,
       '#title' => $this->t('Repeat rule (RRULE)'),
-      '#value_callback' => [$this, 'rruleValueCallback']
     ];
     return $element;
   }

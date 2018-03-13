@@ -45,6 +45,7 @@ class DateRecurDefaultRRule extends RRule {
     $build = [];
 
     $daynames = DateHelper::weekDays(TRUE);
+    // Move Sunday to the end of the week as day 7.
     array_push($daynames, $daynames[0]);
     unset($daynames[0]);
     $monthnames = DateHelper::monthNames(TRUE);
@@ -75,6 +76,7 @@ class DateRecurDefaultRRule extends RRule {
       case self::WEEKLY:
         $build['rule'] = $this->t('weekly', ['@day' => $parts['day']]);
         break;
+
       case self::MONTHLY:
         $build['rule'] = $this->t('monthly', ['@posday' => $parts['day']]);
         break;
@@ -104,6 +106,11 @@ class DateRecurDefaultRRule extends RRule {
       'weekly' => t('Every week on @day'),
       'monthly' => t('On the @posday each month'),
       'pos_day' => t('@pos @day'),
+      'week_1' => t('first'),
+      'week_2' => t('second'),
+      'week_3' => t('third'),
+      'week_4' => t('forth'),
+      'week_5' => t('fifth'),
       'last_1' => t('last'),
       'last_2' => t('second to last'),
     ];
@@ -131,7 +138,10 @@ class DateRecurDefaultRRule extends RRule {
      });
     // Append a dot for positive, get a string for ultimates.
     $list = array_map(function($i) {
-      if ($i > 0) {
+      if ($i > 0 && $i <= 5) {
+        return $this->getString('week_' . abs($i));
+      }
+      elseif ($i > 0) {
         return $i . '.';
       }
       elseif ($i > -3) {

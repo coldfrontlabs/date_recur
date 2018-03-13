@@ -26,7 +26,7 @@ class DateRecurRRule implements \Iterator {
   const RFC_DATE_FORMAT = 'Ymd\THis\Z';
 
   /**
-   * @var \RRule\RRule
+   * @var \Drupal\date_recur\DateRecurDefaultRSet
    */
   protected $rrule;
 
@@ -123,9 +123,51 @@ class DateRecurRRule implements \Iterator {
     return FALSE;
   }
 
+  /**
+   * return the current rule.
+   */
+  public function getRRule() {
+    $rules = 'RRULE:';
+    foreach (explode("\n", $this->rrule->getRRules()[0]) as $line) {
+      list($type, $rule) = explode(':', $line);
+      if ($type == 'RRULE') {
+        $rules .= $rule;
+      }
+    }
+
+    $set_keys = ['RDATE', 'EXRULE', 'EXDATE'];
+    $set_parts = $this->setParts;
+
+    array_walk($set_parts, function (&$v, $k) {
+      if (is_array($v)) {
+        $return = $k . ':';
+        foreach ($v as $index => $value) {
+          $return .= $value;
+        }
+        $v = $return;
+      }
+      else {
+        $v = $k . ':' . $v;
+      }
+    });
+
+    // Appeand the set parts on new lines.
+    foreach ($set_keys as $set_key) {
+      if (isset($set_parts[$set_key])) {
+        $rules .= "\n" . $set_parts[$set_key];
+      }
+    }
+    return $rules;
+  }
+
   public function getParts() {
     return $this->parts;
   }
+  
+  public function getSetParts() {
+    return $this->setParts;
+  }
+
 
   /**
    * Parse an RFC rrule string and add a start date (DTSTART).
@@ -148,7 +190,10 @@ class DateRecurRRule implements \Iterator {
     foreach (explode("\n", $rrule) as $key => $part) {
       $els = explode(':', $part);
       if (in_array($els[0], $set_keys)) {
-        $set_parts[$els[0]][] = $part;
+        $exploded_keys = explode(':', $part);
+        $date = DateTimePlus::createFromFormat(DateRecurRRule::RFC_DATE_FORMAT, $exploded_keys[1]);
+        //$set_parts[$exploded_keys[0]][] = $date;
+        $set_parts[$exploded_keys[0]][] = $exploded_keys[1];
       }
       else if ($els[0] == 'RRULE') {
         $rules[] = $part;
@@ -160,7 +205,6 @@ class DateRecurRRule implements \Iterator {
         throw new \InvalidArgumentException("Unsupported line: " . $part);
       }
     }
-
     if (!count($rules)) {
       throw new \InvalidArgumentException("Missing RRULE line: " . $rrule);
     }
@@ -322,6 +366,12 @@ class DateRecurRRule implements \Iterator {
   }
 
   public static function massageDateValueForStorage($date, $format) {
+    if (is_string($date)) {
+      if ($date == "now") {
+       $date = date("Y-m-d\TH:i:s");
+      }
+      $date = date_create_from_format('Y-m-d\TH:i:s',$date);
+    }
     if ($format == DATETIME_DATE_STORAGE_FORMAT) {
       datetime_date_default_time($date);
     }

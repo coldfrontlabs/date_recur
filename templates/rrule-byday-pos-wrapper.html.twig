@@ -1,0 +1,21 @@
+{#
+/**
+ * @file
+ * Theme wrapper to present the By Day Pos checkboxes for an 'rrule' #type form element.
+ *
+ * Available variables
+ * - element: A list of properties for the checkboxes element.
+ *
+ * @see template_preprocess_checkboxes()
+ *
+ * @ingroup themeable
+ *
+ * @todo: remove this file once https://www.drupal.org/node/1819284 is resolved.
+ */
+#}
+<div class="byday-pos-container">
+    <a class="byday-pos-text">{{ element['#link_text'] }}</a>
+    <div class="byday-pos-input">
+        {{ element }}
+    </div>
+</div>
