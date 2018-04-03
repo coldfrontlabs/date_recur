@@ -343,24 +343,26 @@ class DateRecurRRule implements \Iterator {
     /** @var DateTimePlus $date */
     $date = DrupalDateTime::createFromFormat('Ymd H:i', $occurrence->format('Ymd') . ' ' . $this->recurTime, $this->startDate->getTimezone());
 
-    // Daylight savings issue.
-    $occurrence->setTimeZone(new \DateTimeZone($this->timezone));
-    $start_timezone = clone $this->startDate;
-    $start_timezone->setTimeZone(new \DateTimeZone($this->timezone));
+    if (!$display) {
+      // Daylight savings issue.
+      $occurrence->setTimeZone(new \DateTimeZone($this->timezone));
+      $start_timezone = clone $this->startDate;
+      $start_timezone->setTimeZone(new \DateTimeZone($this->timezone));
 
-    // If the Date I format is equal to 1 then its currently in daylight savings format.
-    // If that start timezone does not match the occurence timezone there was a change.
-    // We need to adjust the time based on that change. 
-    // If the occurrence is switching between daylight savings and not daylight savings.
-    if ($occurrence->format('I') == TRUE && $start_timezone->format('I') == FALSE) {
-      // Minus the hour for daylight savings.
-      $new_time = strtotime($date->format(c) . ' - 1 hour');
-      $date = DrupalDateTime::createFromFormat('U', $new_time, $this->startDate->getTimezone());
-    } 
-    elseif ($occurrence->format('I') == FALSE && $start_timezone->format('I') == TRUE) {
-      // Minus the hour for daylight savings.
-      $new_time = strtotime($date->format(c) . ' + 1 hour');
-      $date = DrupalDateTime::createFromFormat('U', $new_time, $this->startDate->getTimezone());
+      // If the Date I format is equal to 1 then its currently in daylight savings format.
+      // If that start timezone does not match the occurence timezone there was a change.
+      // We need to adjust the time based on that change. 
+      // If the occurrence is switching between daylight savings and not daylight savings.
+      if ($occurrence->format('I') == TRUE && $start_timezone->format('I') == FALSE) {
+        // Minus the hour for daylight savings.
+        $new_time = strtotime($date->format(c) . ' - 1 hour');
+        $date = DrupalDateTime::createFromFormat('U', $new_time, $this->startDate->getTimezone());
+      }
+      elseif ($occurrence->format('I') == FALSE && $start_timezone->format('I') == TRUE) {
+        // Minus the hour for daylight savings.
+        $new_time = strtotime($date->format(c) . ' + 1 hour');
+        $date = DrupalDateTime::createFromFormat('U', $new_time, $this->startDate->getTimezone());
+      }
     }
 
     if ($display) {
