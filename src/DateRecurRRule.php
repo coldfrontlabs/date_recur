@@ -105,8 +105,7 @@ class DateRecurRRule implements \Iterator {
           }
         }
       }
-    }
-
+    }    
     if ($timezone) {
       $this->timezone = $timezone;
       $start = clone $this->startDate;
@@ -317,7 +316,7 @@ class DateRecurRRule implements \Iterator {
     if ($this->rrule->isInfinite() && $end === NULL && $num === NULL) {
       throw new \LogicException('Cannot get all occurrences of an infinite recurrence rule.');
     }
-
+    
     $occurrences = [];
     foreach ($this->rrule as $occurrence) {
       if ($start !== NULL && $occurrence < $start) {
@@ -343,6 +342,14 @@ class DateRecurRRule implements \Iterator {
   protected function massageOccurrence(\DateTime $occurrence, $display = TRUE) {
     /** @var DateTimePlus $date */
     $date = DrupalDateTime::createFromFormat('Ymd H:i', $occurrence->format('Ymd') . ' ' . $this->recurTime, $this->startDate->getTimezone());
+
+    $occurrence->setTimeZone(new \DateTimeZone('America/Toronto'));
+    if ($occurrence->format('I')) {
+      // Minus the hour for daylight savings.
+      $new_time = strtotime($date->format(c) . ' - 1 hour');
+      $date = DrupalDateTime::createFromFormat('U', $new_time, $this->startDate->getTimezone());
+    }
+
     if ($display) {
       $date = $this->adjustDateForDisplay($date);
     }

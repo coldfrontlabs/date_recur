@@ -689,7 +689,6 @@ class RRule extends FormElement {
           $return .= "\n" . $set_parts[$set_key];
         }
       }
-      ksm($return);
       return $return;
     }
 
