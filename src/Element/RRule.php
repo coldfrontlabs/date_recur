@@ -130,9 +130,9 @@ class RRule extends FormElement {
       $repeat = 0;
       $rrule = new DateRecurRRule('FREQ=WEEKLY', new DrupalDateTime(), NULL, $element['#timezone']);
     }
-  
+
     $parts = array_merge($rrule->getSetParts(), $rrule->getParts());
-   
+
     // Add the users timezone to be able to conpensate for this.
     $element['#attached']['drupalSettings']['date_recur'] += [
       'timezone' => $tz->getName(),
@@ -449,7 +449,7 @@ class RRule extends FormElement {
         ],
       ],
     ];
-  
+
     $date_excluded = [];
     if (isset($parts['EXDATE'])) {
       $count = 0;
@@ -458,7 +458,7 @@ class RRule extends FormElement {
         $count++;
       }
     }
-  
+
     // Load from the formstate also.
     /**
     if ($form_state->isSubmitted()) {
@@ -498,19 +498,18 @@ class RRule extends FormElement {
 
     for ($i = 0; $i < $exdate_count; $i++) {
       // Fetch the values from the element values if they were previously set.
-      /**
+
       if (isset($element['#value']['exdate']['exclude_date_' . $i])) {
         $excluded_date = $element['#value']['exdate']['exclude_date_' . $i];
         if (!empty($excluded_date['date'])) {
           $date_exclude[$i] = DateTimePlus::createFromFormat('Y-m-d', $excluded_date['date']);
         }
       }
-      */
 
-      $default_date = $form_state->getvalues()['field_schedule_date_recur'][0]['rrule']['exdate']['exclude_date_' . $i];
-      if (isset($default_date['date']) && !empty($default_date['date'])) {
-        $date_excluded[$i] = DateTimePlus::createFromFormat('Y-m-d', $default_date['date']);
-      }
+      // $default_date = $form_state->getvalues()['field_schedule_date_recur'][0]['rrule']['exdate']['exclude_date_' . $i];
+      // if (isset($default_date['date']) && !empty($default_date['date'])) {
+      //   $date_excluded[$i] = DateTimePlus::createFromFormat('Y-m-d', $default_date['date']);
+      // }
 
       // Exclude date
       $element['exdate']['exclude_date_' . $i] = [
@@ -520,20 +519,12 @@ class RRule extends FormElement {
         '#value' => $date_excluded[$i] instanceof DateTimePlus ?
           ['date' => $date_excluded[$i]->format(DateFormat::load('html_date')->getPattern()),
           'object' => $date_excluded[$i],] : NULL,
-
-   /**
-        '#value' => $date_exclude[$i] instanceof DateTimePlus ? 
-          ['date' => $date_exclude[$i]->format(DateFormat::load('html_date')->getPattern()),
-          'object' => $date_exclude[$i],] : NULL,*/
         '#date_date_element' => 'date',
         '#date_time_element' => 'none',
         '#attributes' => [
           'class' => ['rrule-exdate'],
         ],
-        '#element_validate' => [
-          //['\Drupal\date_recur\Element\RRule', 'validateUntilDate'],
-          //['\Drupal\Core\Datetime\Element\Datetime', 'validateDatetime'],
-        ],
+        '#element_validate' => [],
         '#states' => [
           'visible' => [
             ':input[name="' . $element['#name'] . '[repeat]"]' => [
@@ -589,7 +580,7 @@ class RRule extends FormElement {
   /**
    * Ajax add item callback function to add another exclude date.
    *
-   * @param form $form 
+   * @param form $form
    *   Form element for	the page.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The current state of the form.
@@ -675,7 +666,7 @@ class RRule extends FormElement {
         if (is_array($v)) {
           $return = $k . ':';
           foreach ($v as $index => $value) {
-            $return .= $value; 
+            $return .= $value;
           }
           $v = $return;
         }
@@ -683,7 +674,7 @@ class RRule extends FormElement {
           $v = $k . ':' . $v;
         }
       });
-      // Appeand the set parts on new lines. 
+      // Appeand the set parts on new lines.
       foreach ($set_keys as $set_key) {
         if (isset($set_parts[$set_key])) {
           $return .= "\n" . $set_parts[$set_key];
@@ -787,7 +778,7 @@ class RRule extends FormElement {
         elseif (is_array($input_exdate) && isset($input_exdate['date']) && !empty($input_exdate['date'])) {
           $input_date = DateTimePlus::createFromFormat('Y-m-d\TH:i:s', ($input_exdate['date'] . "T00:00:00"));
           $set_parts['EXDATE'][] = $input_date->format(DateRecurRRule::RFC_DATE_FORMAT);
-        }        
+        }
       }
     }
     return $set_parts;

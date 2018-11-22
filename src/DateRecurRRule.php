@@ -105,7 +105,7 @@ class DateRecurRRule implements \Iterator {
           }
         }
       }
-    }    
+    }
     if ($timezone) {
       $this->timezone = $timezone;
       $start = clone $this->startDate;
@@ -162,7 +162,7 @@ class DateRecurRRule implements \Iterator {
   public function getParts() {
     return $this->parts;
   }
-  
+
   public function getSetParts() {
     return $this->setParts;
   }
@@ -219,7 +219,6 @@ class DateRecurRRule implements \Iterator {
     $this->setParts = $set_parts;
   }
 
-  /**
   /**
    * Validate that an rrule string is parseable.
    *
@@ -316,7 +315,7 @@ class DateRecurRRule implements \Iterator {
     if ($this->rrule->isInfinite() && $end === NULL && $num === NULL) {
       throw new \LogicException('Cannot get all occurrences of an infinite recurrence rule.');
     }
-    
+
     $occurrences = [];
     foreach ($this->rrule as $occurrence) {
       if ($start !== NULL && $occurrence < $start) {
@@ -351,7 +350,7 @@ class DateRecurRRule implements \Iterator {
 
       // If the Date I format is equal to 1 then its currently in daylight savings format.
       // If that start timezone does not match the occurence timezone there was a change.
-      // We need to adjust the time based on that change. 
+      // We need to adjust the time based on that change.
       // If the occurrence is switching between daylight savings and not daylight savings.
       if ($occurrence->format('I') == TRUE && $start_timezone->format('I') == FALSE) {
         // Minus the hour for daylight savings.
